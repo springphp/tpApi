@@ -47,6 +47,6 @@ class Common extends Model
 	 * @return [type] [description]
 	 */
 	final protected function uniqueSignin(){
-
+        return $this->show(1,'ok');
 	}
 }
