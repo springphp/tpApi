@@ -10,7 +10,7 @@ use think\Request;
 */
 class Index extends Common
 {
-
+	
 	/**
 	 * api 入口访问方法
 	 * @return [type] [description]
@@ -23,7 +23,7 @@ class Index extends Common
 		];
 		extract($params);
 
-		$this->checkParams( $params );//验证访问参数
+		// $this->checkParams( $params );//验证访问参数
 
 		switch ($opertionType) {
 			case 'api.signin':

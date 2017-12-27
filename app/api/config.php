@@ -5,7 +5,8 @@ return [
     'default_return_type'    => 'json',
     // URL伪静态后缀
     'url_html_suffix'        => 'htm',
-
+    // 异常处理handle类 留空使用 \think\exception\Handle
+    'exception_handle'       => '\app\api\common\lib\exception\ApiHandleException',
 
 
     //接口参数

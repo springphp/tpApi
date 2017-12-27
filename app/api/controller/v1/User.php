@@ -13,9 +13,13 @@ class User extends Common
 	 * @return [type] [description]
 	 */
 	public function signin(){
-		$username = input('request.username','','trim');
-		$password = input('request.password','','trim');
-		dump($username);dump(input());die;
+		$username = input('username','','trim');
+		$password = input('password','','trim');
+		if( empty($username) || empty($password) ){
+			return $this->show(0,'用户名或密码皆不能为空');
+			exception();
+		}
+
 		$userInfo = db('member')->where('mobile',$username)->find();
 		if( $userInfo ) {
 			if( md5( $password ) == $userInfo['password'] ) {
@@ -24,10 +28,10 @@ class User extends Common
 				unset($userInfo['password']);
 				session('app_users',$userInfo);
 
-				return $this->show('1','恭喜您，登录成功！',$userInfo);
+				return $this->show(1,'恭喜您，登录成功！',$userInfo);
 			}
 		}
-		return $this->show('1','很遗憾，登录失败！');
+		return $this->show(0,'很遗憾，登录失败！');
 	}
 
 	/**
