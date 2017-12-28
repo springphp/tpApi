@@ -1,6 +1,6 @@
 <?php
 namespace app\api\controller\v1;
-use app\api\controller\v1\Common;
+use app\api\common\controller\Common;
 use think\Request;
 
 /**
@@ -35,7 +35,7 @@ class User extends Common
 					'realname'		=> $realname?:'iwater',
 					'create_time'	=> date('Y-m-d H:i:s',$create_time)
 				];
-				return $this->show(1,'恭喜您，登录成功！',$response);
+				return $this->show(1, '恭喜您，登录成功！', $response, $userInfo);
 			}
 		}
 		return $this->show(0,'很遗憾，登录失败！');
