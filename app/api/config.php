@@ -12,6 +12,10 @@ return [
     //接口参数
     'app_api'	=>[
     	'apiKey'		=> 'iwater123456',
-    	'secrectCode'	=> '4de43a3abf792807c86fb040152530c1'
+    	'secrectCode'	=> '4de43a3abf792807c86fb040152530c1',
+
+        //请求时间
+        'request_time'  => '10',
+
     ],
 ];

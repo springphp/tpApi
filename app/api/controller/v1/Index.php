@@ -27,10 +27,10 @@ class Index extends Common
 
 		switch ($opertionType) {
 			case 'api.signin':
-				return D('v1.User','controller')->signin($request);
+				return D('v1.User','controller')->signin();
 				break;
 			case 'api.signup':
-				return D('v1.User','controller')->signup($request);
+				return D('v1.User','controller')->signup();
 				break;
 			default:
 				return D('v1.User','controller')->test();

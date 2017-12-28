@@ -16,12 +16,14 @@ class Common extends Model
      * @param  array   $data    [description]
      * @return [type]           [description]
      */
-    public function show( $status=1, $message='', $data=array() )
+    public function show( $status=1, $message='', $data=array(),$extParams= '' )
     {
         $returnDate = [
         	'status'	=> $status,
         	'message'	=> $message,
-        	'data'		=> $data
+        	'data'		=> $data,
+        	'time'		=> date('Y-m-d H:i:s'),
+        	'ext'		=> $extParams
         ];
         return $returnDate;
     }
@@ -31,7 +33,7 @@ class Common extends Model
      * @param  [type] $params [description]
      * @return [type]         [description]
      */
-    protected function checkParams( $params=array() ){
+    final protected function checkParams( $params=array() ){
     	extract($params);
     	//验证加密字符合法性 md5 
     	$apiKey = config('app_api.secrectCode');
@@ -48,5 +50,14 @@ class Common extends Model
 	 */
 	final protected function uniqueSignin(){
         return $this->show(1,'ok');
+	}
+
+	final protected function checkTime(){
+		$request_time = input('requestTime','','trim');
+		//TONE:如何实现接口请求失效逻辑
+		if( !$request_time ) return show(0,'请求时间不能为空');
+		if( time() - $request_time > config('app_api.request_time') ){
+			return show(0,'请求已失效');
+		}
 	}
 }

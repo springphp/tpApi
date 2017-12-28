@@ -28,7 +28,14 @@ class User extends Common
 				unset($userInfo['password']);
 				session('app_users',$userInfo);
 
-				return $this->show(1,'恭喜您，登录成功！',$userInfo);
+				extract($userInfo);
+				$response = [
+					'user_id'		=> $user_id,
+					'mobile'		=> $mobile,
+					'realname'		=> $realname?:'iwater',
+					'create_time'	=> date('Y-m-d H:i:s',$create_time)
+				];
+				return $this->show(1,'恭喜您，登录成功！',$response);
 			}
 		}
 		return $this->show(0,'很遗憾，登录失败！');
