@@ -19,7 +19,7 @@ class Index extends Common
 	{
 		// $this->checkParams();//验证访问参数
 
-		// $this->checkVersion();//验证版本号
+		$this->checkVersion();//验证版本号
 		
 		$opertionType = input('opertionType','','trim');
 		switch ($opertionType) {

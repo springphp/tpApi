@@ -82,7 +82,7 @@ class Common extends Model
     final protected function checkVersion(){
         if( input('version','v1','trim') != config('app_api.app_version') ){
             $message = '当前版本为：'.config('app_api.app_version').'，请确认访问版本';
-            echo json_encode( $this->show(0, $m) );die;
+            echo json_encode( $this->show(0, $message) );die;
         }
     }
 }

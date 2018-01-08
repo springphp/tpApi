@@ -57,12 +57,13 @@ class User extends Common
 		}
 		$res = model('member')->add( $data );
 		if( $res ) {
+			F( $data );
 			return $this->show(1,'恭喜您，注册成功！');
 		}
 		return $this->show(0,'很遗憾，注册失败！');
 	}
 
 	public function test(){
-		return $this->show('1','this is a test');
+		return $this->show(0,'interface name is error!');
 	}
 }

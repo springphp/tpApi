@@ -2,4 +2,4 @@
 
 use think\Route;
 
-Route::get('mystyle/:version/gateway','api/Index/index',['ext'=>'htm']);
+Route::post('mystyle/:version/gateway','api/Index/index',['ext'=>'htm']);

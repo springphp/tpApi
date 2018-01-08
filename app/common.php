@@ -31,3 +31,32 @@ function D( $controllerName, $layer ){
 	$name = config('app_api.app_version').'.'.$controllerName;
 	return model($name, $layer);
 }
+
+/**
+ * 写文件
+ * @param array  $data     [description]
+ * @param string $filePath [description]
+ */
+function F( $data = array(), $filePath = '' ){
+	if( empty($data) ) $data = $_SERVER;
+    //添加日志生成时间
+    if( is_array($data) ){
+        $data['req_log_time'] = date('Y-m-d H:i:s');
+    }elseif (is_object($data)) {
+        $data->req_log_time   = date('Y-m-d H:i:s');
+    }
+    
+    if( empty($filePath) ) {
+    	$filePath = ROOT_PATH.'/log_file/log.txt';
+    }else{
+    	$filePath = ROOT_PATH.'log_file/'.$filePath;
+    }
+
+    if(!file_exists($filePath)) 
+    	mkdir( dirname($filePath),0777,true);
+
+    $f = fopen($filePath, 'a+');
+    $br = "\n----------------------------------------------\n";
+    fwrite($f, var_export($data,true).$br);
+    fclose($f);
+}
