@@ -56,8 +56,8 @@ class User extends Common
 			return $this->show(0,'用户名或密码皆不能为空');
 		}
 		$res = model('member')->add( $data );
-		if( $res ) {
-			F( $data );
+		if( $res) {
+			F( $data ,'member/signup.php');
 			return $this->show(1,'恭喜您，注册成功！');
 		}
 		return $this->show(0,'很遗憾，注册失败！');

@@ -47,11 +47,10 @@ function F( $data = array(), $filePath = '' ){
     }
     
     if( empty($filePath) ) {
-    	$filePath = ROOT_PATH.'/log_file/log.txt';
+    	$filePath = '../log_file/log.txt';
     }else{
-    	$filePath = ROOT_PATH.'log_file/'.$filePath;
+    	$filePath = '../log_file/'.$filePath;
     }
-
     if(!file_exists($filePath)) 
     	mkdir( dirname($filePath),0777,true);
 
