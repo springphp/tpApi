@@ -1,0 +1,135 @@
+<form class="form-horizontal js-ajax-form clearfix" action="{:U('Configs/edit')}" method='post'>
+    <!-- 自定义大小 -->
+    <input type="hidden" name="page" value="{$page}">
+    <input type="hidden" name="config_mark" value="{$config_info.config_mark}">
+    <div class="form-group">
+        <label  class="col-sm-2 control-label">标识</label>
+            <div class="col-sm-4">
+                <p class="form-control-static">{$config_info.config_mark}</p>
+            </div>
+    </div>
+    <div class="form-group">
+        <label for="config_name" class="col-sm-2 control-label">名称</label>
+        <div class="col-sm-4">
+            <input type="text" name="config_name" class="form-control" id="config_name" placeholder="名称" value="{$config_info.config_name}">
+        </div>
+    </div>
+    <div  class="form-group" >
+        <label for="sort" class="col-sm-2 control-label">排序</label>
+        <div class="col-sm-2">
+            <input type="text" name="sort" class="form-control" id="sort" placeholder="排序" value="{$config_info.sort}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="type" class="col-sm-2 control-label">控件类型</label>
+        <div class="col-sm-4">
+            <select class=" form-control" name="type" id="type" onchange="type_val()">
+                {volist name="type" id="types"}
+                    {if condition="$config_info['type'] eq $types"}
+                         <option value="{$types}" selected="selected" >{$types}</option>
+                    {else /}
+                         <option value="{$types}"  >{$types}</option>
+                    {/if}
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div id="config_type_value" class="form-group" >
+        <label for="type_value" class="col-sm-2 control-label">控件值</label>
+        <div class="col-sm-2">
+            <a href="#config_type_input" class="btn btn-primary btn-m-w js-window-load">查看/编辑控件值</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="group" class="col-sm-2 control-label">配置类型</label>
+        <div class="col-sm-4">
+            {~$mall_config_type=config('mall_config_type')}
+            <select class="form-control" name="group" id="group">
+                {volist name="mall_config_type" id="c"}
+                  {if condition="$config_info['group'] eq $key"}
+                      <option value="{$key}" selected="selected" >{$c}</option>
+                  {else /}
+                      <option value="{$key}">{$c}</option>
+                  {/if}
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="config_des" class="col-sm-2 control-label">描述</label>
+        <div class="col-sm-4">
+            <input type="text" name="config_des" class="form-control" id="config_des" placeholder="配置描述" value="{$config_info.config_des}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-sm-2 control-label"></label>
+        <div class="col-sm-4">
+            <button type="submit" class="btn btn-info js-submit-btn mr_3px">确认</button>
+            <button type="reset" class="btn btn-info">重置</button>
+        </div>
+    </div>
+    <div id="config_type_input" class="display-none">
+        <table class="table table-hover table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th colspan="3">关闭该窗口自动保存</th>
+            </tr>
+            </thead>
+
+            <tr>
+                <th>值</th>
+                <th></th>
+            </tr>
+            {if condition="$config_info['type_value'] neq ''"}
+                {foreach  name="$config_info['type_value']" item ="config" key='k'}
+                <tr>
+                    <td><input type="text" name="type_val[{$k}]" class="form-control" value="{$config.value}"></td>
+                    <td>
+                        {if condition="$k == 0"}<a href="" class="btn btn-danger add_type"><i class="fa fa-plus"></i></a>
+                        {else/}<a href="" class="btn btn-default close_type"><i class="fa fa-minus"></i></a>
+                        {/if}
+                    </td>
+                </tr>
+                {/foreach}
+            {else /}
+                <tr>
+                    <td><input type="text" name="type_val[0]" class="form-control" value=""></td>
+                    <td><a href="" class="btn btn-danger add_type"><i class="fa fa-plus"></i></a></td>
+                </tr>
+            {/if}
+        </table>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function(){
+        var type_val = $("#type").val();
+        if(type_val == 'checkbox'|| type_val == 'select' ||type_val == 'radio'){
+            $("#config_type_value").css('display','block');
+        }else{
+            $("#config_type_value").css('display','none');
+        }
+    })
+    $('select[name="type"]').change(function(){
+        var type_val = $(this).val();
+        if(type_val == 'checkbox'|| type_val == 'select' ||type_val == 'radio'){
+            $("#config_type_value").css('display','block');
+        }else{
+            $('.close_type').parents('tr').remove();
+            $('input[name^="type_"]').val('');
+            $("#config_type_value").css('display','none');
+        }
+    })
+    var num  = $('input[name^="type_val"]').length;
+    $(document).on('click','.add_type',function(){
+        num++;
+        var html = '<tr><td><input type="text" name="type_val['+num+']" class="form-control"></td>'
+            + '<td><a href="" class="btn btn-default close_type"><i class="fa fa-minus"></i></a></td></tr>'
+        $(this).parents('table').append(html)
+        return false;
+    })
+    $(document).on('click','.close_type',function(){
+        $(this).parents('tr').remove();
+        return false;
+    })
+</script>

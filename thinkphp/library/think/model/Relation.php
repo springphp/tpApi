@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -77,39 +77,12 @@ abstract class Relation
         return (new $this->model)->toCollection($resultSet);
     }
 
-    protected function getQueryFields($model)
-    {
-        $fields = $this->query->getOptions('field');
-        return $this->getRelationQueryFields($fields, $model);
-    }
-
-    protected function getRelationQueryFields($fields, $model)
-    {
-        if ($fields) {
-
-            if (is_string($fields)) {
-                $fields = explode(',', $fields);
-            }
-
-            foreach ($fields as &$field) {
-                if (false === strpos($field, '.')) {
-                    $field = $model . '.' . $field;
-                }
-            }
-        } else {
-            $fields = $model . '.*';
-        }
-
-        return $fields;
-    }
-
     /**
      * 执行基础查询（仅执行一次）
      * @access protected
      * @return void
      */
-    protected function baseQuery()
-    {}
+    abstract protected function baseQuery();
 
     public function __call($method, $args)
     {

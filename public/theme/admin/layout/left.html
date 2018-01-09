@@ -1,0 +1,68 @@
+<script type="text/javascript" src="{$web_static}/plugins/tree/jquery.ztree.core.js"></script>
+        <!--左侧导航开始-->
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="nav-close"><i class="fa fa-times-circle"></i>
+            </div>
+            <div class="sidebar-collapse">
+                <ul class="nav sidebar-nav" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element" style="margin-left:-20px;text-align: center;">
+                            <span id ="imgs">
+                                {if condition="$headimg neq ''"}
+                                    <img alt="image" id="headimg" class="img-circle" src="{$web_public}upload\{$headimg}" width="70px" height="70px"/>
+                                {else/}
+                                    <img alt="image" id="headimg" class="img-circle" src="{$web_static}img/default1.jpg" width="70px" height="70px"/>
+                                {/if}
+                            </span>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                               <span class="clear">
+	                                <span class="block m-t-xs">
+	                               		<strong class="font-bold">{:get_login_user_name()}</strong>
+	                               	</span>
+	                                <span class="text-muted text-xs block">
+	                                	{:get_login_admin_group()}
+	                                	<b class="caret"></b>
+	                                </span>
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <!--<li><a class="J_menuItem" href="">修改头像</a>-->
+                                <!--</li>-->
+                                <li><a  class="J_menuItem" href="{:U('Admins/admin_info')}">个人资料</a>
+                                </li>
+                                <!--<li><a class="J_menuItem" href="">信箱</a>-->
+                                <!--</li>-->
+                                <li class="divider"></li>
+                                <li><a href="{:U('Publics/loginOut')}" text="退出登录确认" class="js-del-btn roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 安全退出</a></li>
+                            </ul>
+                        </div>
+                        <div class="logo-element">L</div>
+                    </li>
+                    {$menus}
+                </ul>
+            </div>
+        </nav>
+        <!--左侧导航结束-->
+
+        <script type="text/javascript">
+        	 $(function(){
+        		$('#menu2').metisMenu();
+                $("[data-url]").each(function(){
+                    $(this).one('click', function(event){
+                      event.preventDefault();
+                      var $this = $(this);
+                      var url = $this.attr('data-url');
+                      console.log(url);
+                      $.ajax({
+                         url: url,
+                         success: function(result) {
+                            $('#menu2').metisMenu('dispose');
+                            $this.parent('li').append(result);
+                            $('#menu2').metisMenu();
+                            $this.click();
+                         }
+                      });
+                    });
+                });
+        	 })
+        </script>

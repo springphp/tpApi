@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -12,7 +12,6 @@
 namespace think;
 
 use think\exception\TemplateNotFoundException;
-use think\template\TagLib;
 
 /**
  * ThinkPHP分离出来的模板引擎
@@ -34,7 +33,7 @@ class Template
         'tpl_deny_php'       => false, // 默认模板引擎是否禁用PHP原生代码
         'tpl_begin'          => '{', // 模板引擎普通标签开始标记
         'tpl_end'            => '}', // 模板引擎普通标签结束标记
-        'strip_space'        => false, // 是否去除模板文件里面的html空格与换行
+        'strip_space'        => true, // 是否去除模板文件里面的html空格与换行
         'tpl_cache'          => true, // 是否开启模板编译缓存,设为false则每次都会重新编译
         'compile_type'       => 'file', // 模板编译类型
         'cache_prefix'       => '', // 模板缓存前缀标识，可以动态改变
@@ -60,7 +59,6 @@ class Template
     /**
      * 构造函数
      * @access public
-     * @param array $config
      */
     public function __construct(array $config = [])
     {
@@ -122,7 +120,7 @@ class Template
      * 模板引擎配置项
      * @access public
      * @param array|string $config
-     * @return string|void|array
+     * @return void|array
      */
     public function config($config)
     {
@@ -185,7 +183,7 @@ class Template
         }
         $template = $this->parseTemplateFile($template);
         if ($template) {
-            $cacheFile = $this->config['cache_path'] . $this->config['cache_prefix'] . md5($this->config['layout_name'] . $template) . '.' . ltrim($this->config['cache_suffix'], '.');
+            $cacheFile = $this->config['cache_path'] . $this->config['cache_prefix'] . md5($template) . '.' . ltrim($this->config['cache_suffix'], '.');
             if (!$this->checkCache($cacheFile)) {
                 // 缓存无效 重新模板编译
                 $content = file_get_contents($template);
@@ -236,7 +234,7 @@ class Template
      * @access public
      * @param mixed     $name 布局模板名称 false 则关闭布局
      * @param string    $replace 布局模板内容替换标识
-     * @return Template
+     * @return object
      */
     public function layout($name, $replace = '')
     {
@@ -690,7 +688,6 @@ class Template
         } else {
             $className = '\\think\\template\\taglib\\' . ucwords($tagLib);
         }
-        /** @var Taglib $tLib */
         $tLib = new $className($this);
         $tLib->parseTag($content, $hide ? '' : $tagLib);
         return;
@@ -766,26 +763,31 @@ class Template
                             } else {
                                 if (isset($array[1])) {
                                     $this->parseVar($array[2]);
-                                    $express = $name . $array[1] . $array[2];
+                                    $_name = ' && ' . $name . $array[1] . $array[2];
                                 } else {
-                                    $express = false;
+                                    $_name = '';
                                 }
                                 // $name为数组
                                 switch ($first) {
                                     case '?':
                                         // {$varname??'xxx'} $varname有定义则输出$varname,否则输出xxx
-                                        $str = '<?php echo ' . ($express ?: 'isset(' . $name . ')') . '?' . $name . ':' . substr($str, 1) . '; ?>';
+                                        $str = '<?php echo isset(' . $name . ')' . $_name . ' ? ' . $name . ' : ' . substr($str, 1) . '; ?>';
                                         break;
                                     case '=':
                                         // {$varname?='xxx'} $varname为真时才输出xxx
-                                        $str = '<?php if(' . ($express ?: '!empty(' . $name . ')') . ') echo ' . substr($str, 1) . '; ?>';
+                                        $str = '<?php if(!empty(' . $name . ')' . $_name . ') echo ' . substr($str, 1) . '; ?>';
                                         break;
                                     case ':':
                                         // {$varname?:'xxx'} $varname为真时输出$varname,否则输出xxx
-                                        $str = '<?php echo ' . ($express ?: '!empty(' . $name . ')') . '?' . $name . $str . '; ?>';
+                                        $str = '<?php echo !empty(' . $name . ')' . $_name . '?' . $name . $str . '; ?>';
                                         break;
                                     default:
-                                        $str = '<?php echo ' . ($express ?: '!empty(' . $name . ')') . '?' . $str . '; ?>';
+                                        if (strpos($str, ':')) {
+                                            // {$varname ? 'a' : 'b'} $varname为真时输出a,否则输出b
+                                            $str = '<?php echo !empty(' . $name . ')' . $_name . '?' . $str . '; ?>';
+                                        } else {
+                                            $str = '<?php echo ' . $_name . '?' . $str . '; ?>';
+                                        }
                                 }
                             }
                         } else {
@@ -1073,9 +1075,8 @@ class Template
             } else {
                 $path = isset($module) ? APP_PATH . $module . DS . basename($this->config['view_path']) . DS : $this->config['view_path'];
             }
-            $template = realpath($path . $template . '.' . ltrim($this->config['view_suffix'], '.'));
+            $template = $path . $template . '.' . ltrim($this->config['view_suffix'], '.');
         }
-
         if (is_file($template)) {
             // 记录模板文件的更新时间
             $this->includeFile[$template] = filemtime($template);

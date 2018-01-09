@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -118,7 +118,7 @@ class Url
             $type = Route::getBind('type');
             if ($type) {
                 $bind = Route::getBind($type);
-                if ($bind && 0 === strpos($url, $bind)) {
+                if (0 === strpos($url, $bind)) {
                     $url = substr($url, strlen($bind) + 1);
                 }
             }
@@ -135,7 +135,7 @@ class Url
         if (!empty($vars)) {
             // 添加参数
             if (Config::get('url_common_param')) {
-                $vars = http_build_query($vars);
+                $vars = urldecode(http_build_query($vars));
                 $url .= $suffix . '?' . $vars . $anchor;
             } else {
                 $paramType = Config::get('url_param_type');
@@ -235,7 +235,7 @@ class Url
         $rootDomain = Config::get('url_domain_root');
         if (true === $domain) {
             // 自动判断域名
-            $domain = Config::get('app_host') ?: $request->host();
+            $domain = $request->host();
 
             $domains = Route::rules('domain');
             if ($domains) {
@@ -265,19 +265,14 @@ class Url
 
         } else {
             if (empty($rootDomain)) {
-                $host       = Config::get('app_host') ?: $request->host();
+                $host       = $request->host();
                 $rootDomain = substr_count($host, '.') > 1 ? substr(strstr($host, '.'), 1) : $host;
             }
             if (substr_count($domain, '.') < 2 && !strpos($domain, $rootDomain)) {
                 $domain .= '.' . $rootDomain;
             }
         }
-        if (false !== strpos($domain, '://')) {
-            $scheme = '';
-        } else {
-            $scheme = $request->isSsl() || Config::get('is_https') ? 'https://' : 'http://';
-        }
-        return $scheme . $domain;
+        return ($request->isSsl() ? 'https://' : 'http://') . $domain;
     }
 
     // 解析URL后缀
@@ -300,10 +295,9 @@ class Url
             if (empty($pattern)) {
                 return [$url, $domain, $suffix];
             }
-            $type = Config::get('url_common_param');
             foreach ($pattern as $key => $val) {
                 if (isset($vars[$key])) {
-                    $url = str_replace(['[:' . $key . ']', '<' . $key . '?>', ':' . $key . '', '<' . $key . '>'], $type ? $vars[$key] : urlencode($vars[$key]), $url);
+                    $url = str_replace(['[:' . $key . ']', '<' . $key . '?>', ':' . $key . '', '<' . $key . '>'], $vars[$key], $url);
                     unset($vars[$key]);
                     $result = [$url, $domain, $suffix];
                 } elseif (2 == $val) {

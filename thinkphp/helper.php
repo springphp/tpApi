@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -127,7 +127,7 @@ if (!function_exists('input')) {
         if ($pos = strpos($key, '.')) {
             // 指定参数来源
             list($method, $key) = explode('.', $key, 2);
-            if (!in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'route', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
+            if (!in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
                 $key    = $method . '.' . $key;
                 $method = 'param';
             }
@@ -192,7 +192,7 @@ if (!function_exists('db')) {
      * @param bool          $force 是否强制重新连接
      * @return \think\db\Query
      */
-    function db($name = '', $config = [], $force = false)
+    function db($name = '', $config = [], $force = true)
     {
         return Db::connect($config, $force)->name($name);
     }
@@ -441,8 +441,12 @@ if (!function_exists('view')) {
      * @param integer   $code 状态码
      * @return \think\response\View
      */
-    function view($template = '', $vars = [], $replace = [], $code = 200)
+    function view($template = '',$vars = [], $replace = [], $code = 200)
     {
+        if (is_array($template)) {
+            $vars = $template;
+            $template = '';
+        }
         return Response::create($template, 'view', $code)->replace($replace)->assign($vars);
     }
 }

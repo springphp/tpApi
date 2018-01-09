@@ -1,0 +1,43 @@
+*{
+	margin:0;
+	padding: 0;
+	font-family: "微软雅黑";
+	font-size: 12px;
+}
+input,button{
+	outline: none;
+}
+button{
+	cursor: pointer;
+}
+ul,li,ol{
+	list-style: none;
+}
+a{
+	text-decoration: none;	
+	color: rgb(102,102,102);
+}
+img{
+	border: 0;
+}
+.redcolor{
+	color: red;
+}
+.whitecolor{
+	color: white;
+}
+.widthfull{
+	width: 100%;
+}
+.width1200{
+	width: 1200px;
+	margin: 0 auto;
+	/*border: 1px solid black;*/
+	overflow: hidden;
+}
+.fleft{
+	float: left;
+}
+.fright{
+	float: right;	
+}

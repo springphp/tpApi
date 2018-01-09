@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -19,6 +19,7 @@ use think\response\Xml as XmlResponse;
 
 class Response
 {
+
     // 原始数据
     protected $data;
 
@@ -49,12 +50,12 @@ class Response
     public function __construct($data = '', $code = 200, array $header = [], $options = [])
     {
         $this->data($data);
+        $this->header = $header;
+        $this->code   = $code;
         if (!empty($options)) {
             $this->options = array_merge($this->options, $options);
         }
         $this->contentType($this->contentType, $this->charset);
-        $this->header = array_merge($this->header, $header);
-        $this->code   = $code;
     }
 
     /**
@@ -89,9 +90,6 @@ class Response
      */
     public function send()
     {
-        // 监听response_send
-        Hook::listen('response_send', $this);
-
         // 处理输出数据
         $data = $this->getContent();
 
@@ -106,7 +104,7 @@ class Response
                 $this->header['Cache-Control'] = 'max-age=' . $cache[1] . ',must-revalidate';
                 $this->header['Last-Modified'] = gmdate('D, d M Y H:i:s') . ' GMT';
                 $this->header['Expires']       = gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + $cache[1]) . ' GMT';
-                Cache::tag($cache[2])->set($cache[0], [$data, $this->header], $cache[1]);
+                Cache::set($cache[0], [$data, $this->header], $cache[1]);
             }
         }
 
@@ -199,9 +197,9 @@ class Response
     public function content($content)
     {
         if (null !== $content && !is_string($content) && !is_numeric($content) && !is_callable([
-            $content,
-            '__toString',
-        ])
+                $content,
+                '__toString',
+            ])
         ) {
             throw new \InvalidArgumentException(sprintf('variable type error： %s', gettype($content)));
         }
@@ -311,9 +309,9 @@ class Response
             $content = $this->output($this->data);
 
             if (null !== $content && !is_string($content) && !is_numeric($content) && !is_callable([
-                $content,
-                '__toString',
-            ])
+                    $content,
+                    '__toString',
+                ])
             ) {
                 throw new \InvalidArgumentException(sprintf('variable type error： %s', gettype($content)));
             }

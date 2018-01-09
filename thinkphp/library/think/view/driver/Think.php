@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2017 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -42,7 +42,6 @@ class Think
         if (empty($this->config['view_path'])) {
             $this->config['view_path'] = App::$modulePath . 'view' . DS;
         }
-
         $this->template = new Template($this->config);
     }
 
@@ -118,6 +117,11 @@ class Think
             $path   = $this->config['view_base'] . ($module ? $module . DS : '');
         } else {
             $path = isset($module) ? APP_PATH . $module . DS . 'view' . DS : $this->config['view_path'];
+        }
+
+        /* chick 2017-06-08 */
+        if ($this->config['view_theme']) {
+            $path .= $this->config['view_theme'].DS;
         }
 
         $depr = $this->config['view_depr'];

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>{$admin_title}</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <!-- 引入公共css/js -->
+    <link rel="shortcut icon" href="{$web_public}favicon.ico">
+    <!-- JQuery -->
+    <script src="{$web_static}js/jquery.min.js"></script>
+    <link href="{$web_static}plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 字体图标 -->
+    <link href="{$web_static}css/font-awesome.min.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link href="{$css}/animate.css" rel="stylesheet">
+    <link href="{$css}/style.css" rel="stylesheet">
+</head>
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden"  onload="checkLoginStatus()">
+
+    <div id="wrapper">
+		{include file="layout/left"}
+
+        <!--右侧部分开始-->
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom visible-xs">
+                <a class="navbar-minimalize minimalize-styl-2 btn btn-primary" style="margin:10px 5px 5px 20px" href="#"><i class="fa fa-bars"></i> </a>
+            </div>
+            <div class="row content-tabs">
+                <button class="roll-nav roll-left J_tabLeft">
+                    <i class="fa fa-backward"></i>
+                </button>
+                <nav class="page-tabs J_menuTabs">
+                    <div class="page-tabs-content">
+                        <a href="javascript:;" class="active J_menuTab" data-id="index_v1.html">首页</a>
+                    </div>
+                </nav>
+                <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i>
+                </button>
+                <div class="btn-group roll-nav roll-right">
+                    <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span>
+
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li class="J_tabShowActive"><a>定位当前选项卡</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="J_tabCloseAll"><a>关闭全部选项卡</a>
+                        </li>
+                        <li class="J_tabCloseOther"><a>关闭其他选项卡</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="{:U('Publics/loginOut')}" text="退出登录确认" class="js-del-btn roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+            </div>
+
+		<div class="row J_mainContent" id="content-main">
+            <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="{:url('index/main')}" frameborder="0" data-id="index_v1.html" seamless></iframe>
+        </div>
+        <!--右侧部分结束-->
+    </div>
+    <link href="{$web_static}plugins/metisMenu/metisMenu.css"></link>
+    <!-- layui -->
+    <script src="{$web_static}/plugins/layui/layer/layer.js"></script>
+    <!-- 全局js -->
+    <script src="{$web_static}js/common.js"></script>
+    <script src="{$web_static}plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{$web_static}plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="{$web_static}plugins/metisMenu/jquery.metisMenu.js"></script>
+
+    <!-- 第三方插件，加载进度条 -->
+    <script src="{$web_static}plugins/pace/pace.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="{$js}/hplus.js?v=4.1.0"></script>
+    <script src="{$js}/contabs.js"></script>
+    <!-- 检测登录状态-->
+    <style type="text/css">
+        .J_mainContent{
+            overflow-y: hidden!important;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(document).bind("contextmenu",function(e){
+                return false;
+            });
+        });
+        $(document).on('dblclick','.J_menuTab',function(){
+            $(this).find('.fa-times-circle').click();
+        })
+        $(document).on('mousedown','.J_menuTab',function(e){
+            if (e.which != 1) {
+                $(this).find('.fa-times-circle').click();
+            }
+        })
+        function checkLoginStatus(){
+            //获取服务器数据
+            $.ajax({
+                url: '{:U("Index/isUniqueLogin")}',
+                type: 'post',
+                data: '',
+                dataType: 'json',
+                success: function (data) {
+                    $(window).focus();
+                    if(data.code != 1) {
+                        clearInterval(getStatus)
+                        layer.open({
+                            content:data.msg,
+                            btn1:function(){
+                                window.location.href = '';
+                            }
+                        })
+                        return false;
+                    }
+                }
+            });
+        }
+
+        var setTime = '{:config("beat_time")}'?'{:config("beat_time")}'*1000:10000;
+        var getStatus = setInterval("checkLoginStatus()",setTime);
+    </script>
+
+</body>
+</html>

@@ -9,8 +9,8 @@ use think\Exception;
 class ApiException extends Exception
 {
 	public $message = '';
+	public $status = 0;
 	public $httpCode= 500;
-	public $code = 0;
 
 	/**
 	 * 异常类
@@ -18,10 +18,10 @@ class ApiException extends Exception
 	 * @param integer $httpCode [description]
 	 * @param integer $code     [description]
 	 */
-	public function __construct($message = '',$httpCode = 0, $code = 0){
+	public function __construct($message = '',$httpCode = 0, $status = 0){
 		$this->message  = $message;
 		$this->httpCode = $httpCode;
-		$this->code 	= $code;
+		$this->status 	= $status;
 	}
 	
 }
